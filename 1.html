@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counter Display</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        #counter {
+            font-size: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div id="counter">0</div>
+
+    <script>
+        // Function to update the counter display
+        function updateCounter() {
+            const counter = localStorage.getItem('counter') || 0;
+            document.getElementById('counter').innerText = counter;
+        }
+
+        // Update the counter display when the page loads
+        window.onload = updateCounter;
+
+        // Listen for changes in localStorage to update the counter
+        window.addEventListener('storage', updateCounter);
+    </script>
+</body>
+</html>
