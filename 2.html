@@ -3,38 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Counter Control</title>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
-        button {
-            font-size: 50px;
-            margin: 20px;
-            padding: 20px;
-        }
-    </style>
+    <title>Counter</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <button id="decrement">-</button>
-    <button id="increment">+</button>
-
+    <div class="container">
+        <h1>Counter</h1>
+        <div class="counter" id="counter">0</div>
+        <button onclick="increment()">+</button>
+        <button onclick="decrement()">-</button>
+    </div>
     <script>
-        // Function to update the counter in localStorage
-        function updateCounter(change) {
-            let counter = parseInt(localStorage.getItem('counter')) || 0;
-            counter += change;
-            localStorage.setItem('counter', counter);
-        }
+        const counterElement = document.getElementById('counter');
+const filePath = 'counter.txt';  // Replace with the path to your shared network file
 
-        // Add event listeners to the buttons
-        document.getElementById('increment').addEventListener('click', () => updateCounter(1));
-        document.getElementById('decrement').addEventListener('click', () => updateCounter(-1));
+async function readCounter() {
+    try {
+        const response = await fetch(filePath);
+        const text = await response.text();
+        return parseInt(text, 10) || 0;
+    } catch (error) {
+        console.error('Error reading counter:', error);
+        return 0;
+    }
+}
+
+async function writeCounter(value) {
+    try {
+        await fetch(filePath, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'text/plain'
+            },
+            body: value.toString()
+        });
+    } catch (error) {
+        console.error('Error writing counter:', error);
+    }
+}
+
+async function getCounter() {
+    const counter = await readCounter();
+    counterElement.textContent = counter;
+}
+
+async function increment() {
+    let counter = await readCounter();
+    counter++;
+    await writeCounter(counter);
+    counterElement.textContent = counter;
+}
+
+async function decrement() {
+    let counter = await readCounter();
+    counter--;
+    await writeCounter(counter);
+    counterElement.textContent = counter;
+}
+
+getCounter();
+
     </script>
 </body>
 </html>
